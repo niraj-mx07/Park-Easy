@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParkEasy - Digital Parking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div class="landing-page">
+        <div class="landing-container">
+            <div class="landing-header">
+                <div class="logo">
+                    <i class="fas fa-car"></i>
+                    <h1>ParkEasy</h1>
+                </div>
+                <p class="tagline">Your Smart Digital Parking Solution</p>
+            </div>
+            
+            <div class="user-selection">
+                <h2>Welcome to ParkEasy</h2>
+                <p>Please select your role to continue:</p>
+                
+                <div class="role-cards">
+                    <div class="role-card customer-card" onclick="goToCustomer()">
+                        <div class="role-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3>Customer</h3>
+                        <p>Book parking slots, manage your reservations, and make payments</p>
+                        <div class="role-features">
+                            <span><i class="fas fa-check"></i> Easy Booking</span>
+                            <span><i class="fas fa-check"></i> Real-time Availability</span>
+                            <span><i class="fas fa-check"></i> Secure Payments</span>
+                        </div>
+                        <button class="btn btn-primary">Continue as Customer</button>
+                    </div>
+                    
+                    <div class="role-card admin-card" onclick="goToAdmin()">
+                        <div class="role-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h3>Admin</h3>
+                        <p>Manage bookings, view analytics, and control parking operations</p>
+                        <div class="role-features">
+                            <span><i class="fas fa-check"></i> Dashboard Analytics</span>
+                            <span><i class="fas fa-check"></i> Booking Management</span>
+                            <span><i class="fas fa-check"></i> Data Export</span>
+                        </div>
+                        <button class="btn btn-secondary">Continue as Admin</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="landing-footer">
+                <p>&copy; 2024 ParkEasy. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate cards on load
+            const cards = document.querySelectorAll('.role-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(50px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+        
+        function goToCustomer() {
+            // Add click animation
+            const customerCard = document.querySelector('.customer-card');
+            customerCard.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                customerCard.style.transform = 'scale(1)';
+                window.open('index.html', '_blank');
+            }, 150);
+        }
+        
+        function goToAdmin() {
+            // Add click animation
+            const adminCard = document.querySelector('.admin-card');
+            adminCard.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                adminCard.style.transform = 'scale(1)';
+                window.open('admin.html', '_blank');
+            }, 150);
+        }
+    </script>
+</body>
+</html>

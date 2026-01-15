@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Parking System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Leaflet CSS & JS for OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-car"></i>
+                <span>ParkEasy</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#home" class="nav-link active" data-section="home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#book" class="nav-link" data-section="book">Book Slot</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#availability" class="nav-link" data-section="availability">Availability</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#payment" class="nav-link" data-section="payment">Payment</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#mybookings" class="nav-link" data-section="mybookings">My Bookings</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#contact" class="nav-link" data-section="contact">Contact</a>
+                </li>
+            </ul>
+            <div class="nav-auth">
+                <span class="customer-welcome" id="customerWelcome" style="display: none;">Welcome, <span id="customerName"></span></span>
+                <button class="btn btn-login" id="loginBtn" onclick="showCustomerLogin()">Login</button>
+                <button class="btn btn-logout" id="logoutBtn" onclick="handleCustomerLogout()" style="display: none;">Logout</button>
+            </div>
+            <div class="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Welcome to ParkEasy</h1>
+                <p>Your smart digital parking solution. Book, manage, and pay for parking slots with ease.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="showSection('book')">Book Now</button>
+                    <button class="btn btn-secondary" onclick="showSection('availability')">Check Availability</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <!-- Background image will be set via CSS -->
+            </div>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card">
+                <i class="fas fa-clock"></i>
+                <h3>24/7 Service</h3>
+                <p>Book parking slots anytime, anywhere</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>Secure Parking</h3>
+                <p>CCTV monitored and secure parking areas</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Easy Booking</h3>
+                <p>Simple and quick booking process</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Book Slot Section -->
+    <section id="book" class="section">
+        <div class="container">
+            <h2>Book Parking Slot</h2>
+            <div class="booking-form-container">
+                <form id="bookingForm" class="booking-form">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicle">Vehicle Number</label>
+                        <input type="text" id="vehicle" name="vehicle" placeholder="e.g., MH01AB1234" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" id="time" name="time" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="location">Location</label>
+                            <select id="location" name="location">
+                                <option value="CityMall">CityMall</option>
+                                <option value="TechPark">TechPark</option>
+                                <option value="CentralOffice">CentralOffice</option>
+                                <option value="Airport">Airport</option>
+                                <option value="Stadium">Stadium</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="floor">Floor</label>
+                            <select id="floor" name="floor">
+                                <option value="1">Floor 1</option>
+                                <option value="2">Floor 2</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="duration">Duration (hours)</label>
+                            <select id="duration" name="duration" required>
+                                <option value="">Select Duration</option>
+                                <option value="1">1 hour - ₹20</option>
+                                <option value="2">2 hours - ₹35</option>
+                                <option value="4">4 hours - ₹60</option>
+                                <option value="8">8 hours - ₹100</option>
+                                <option value="24">24 hours - ₹200</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="slot">Parking Slot</label>
+                            <select id="slot" name="slot" required>
+                                <option value="">Select Slot</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="total-amount">
+                        <span>Total Amount: ₹<span id="totalAmount">0</span></span>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">Book Slot</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Availability Section -->
+    <section id="availability" class="section">
+        <div class="container">
+            <h2>Real-time Availability</h2>
+            <div class="availability-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="totalSlots">12</span>
+                    <span class="stat-label">Total Slots</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="availableSlots">8</span>
+                    <span class="stat-label">Available</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="bookedSlots">4</span>
+                    <span class="stat-label">Booked</span>
+                </div>
+            </div>
+            
+            <div class="parking-grid">
+                <div class="form-row" style="margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label for="availabilityLocation">Location</label>
+                        <select id="availabilityLocation">
+                            <option value="CityMall">CityMall</option>
+                            <option value="TechPark">TechPark</option>
+                            <option value="CentralOffice">CentralOffice</option>
+                            <option value="Airport">Airport</option>
+                            <option value="Stadium">Stadium</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="availabilityFloor">Floor</label>
+                        <select id="availabilityFloor">
+                            <option value="1">Floor 1</option>
+                            <option value="2">Floor 2</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-legend">
+                    <div class="legend-item">
+                        <div class="legend-color available"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color booked"></div>
+                        <span>Booked</span>
+                    </div>
+                </div>
+                
+                <div class="slots-grid" id="slotsGrid"></div>
+            </div>
+            
+            <button class="btn btn-secondary" onclick="refreshAvailability()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section id="payment" class="section">
+        <div class="container">
+            <h2>Payment</h2>
+            <div class="payment-container">
+                <div class="payment-summary">
+                    <h3>Booking Summary</h3>
+                    <div class="summary-item">
+                        <span>Slot:</span>
+                        <span id="paymentSlot">A1</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Duration:</span>
+                        <span id="paymentDuration">2 hours</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Date:</span>
+                        <span id="paymentDate">2024-01-15</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total Amount:</span>
+                        <span id="paymentTotal">₹35</span>
+                    </div>
+                </div>
+                
+                <div class="payment-methods">
+                    <h3>Payment Method</h3>
+                    <div class="method-tabs">
+                        <button class="method-tab active" data-method="card">
+                            <i class="fas fa-credit-card"></i> Card
+                        </button>
+                        <button class="method-tab" data-method="upi">
+                            <i class="fas fa-mobile-alt"></i> UPI
+                        </button>
+                    </div>
+                    
+                    <div class="payment-form-container">
+                        <!-- Card Payment Form -->
+                        <form id="cardForm" class="payment-form active">
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="expiry">Expiry Date</label>
+                                    <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cvv">CVV</label>
+                                    <input type="text" id="cvv" placeholder="123" maxlength="3">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="cardName">Cardholder Name</label>
+                                <input type="text" id="cardName" placeholder="John Doe">
+                            </div>
+                        </form>
+                        
+                        <!-- UPI Payment Form -->
+                        <form id="upiForm" class="payment-form">
+                            <div class="form-group">
+                                <label for="upiId">UPI ID</label>
+                                <input type="text" id="upiId" placeholder="yourname@paytm">
+                            </div>
+                            
+                            <div class="upi-apps">
+                                <h4>Popular UPI Apps</h4>
+                                <div class="upi-options">
+                                    <div class="upi-option">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Paytm</span>
+                                    </div>
+                                    <div class="upi-option">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>PhonePe</span>
+                                    </div>
+                                    <div class="upi-option">
+                                        <i class="fas fa-mobile-alt"></i>
+                                        <span>Google Pay</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <button class="btn btn-primary btn-full" onclick="processPayment()">
+                        <i class="fas fa-lock"></i> Pay Securely
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- My Bookings Section -->
+    <section id="mybookings" class="section">
+        <div class="container">
+            <div class="bookings-management-container">
+                <div class="bookings-header">
+                    <h2>My Bookings</h2>
+                    <div class="bookings-filters">
+                        <select id="bookingStatusFilter" onchange="filterMyBookings()">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <select id="bookingLocationFilter" onchange="filterMyBookings()">
+                            <option value="">All Locations</option>
+                            <option value="CityMall">CityMall</option>
+                            <option value="TechPark">TechPark</option>
+                            <option value="CentralOffice">CentralOffice</option>
+                            <option value="Airport">Airport</option>
+                            <option value="Stadium">Stadium</option>
+                        </select>
+                        <input type="date" id="bookingDateFilter" onchange="filterMyBookings()" placeholder="Filter by Date">
+                        <button class="btn btn-secondary" onclick="loadMyBookings()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bookings-stats">
+                    <div class="booking-stat-card">
+                        <i class="fas fa-clock"></i>
+                        <span class="stat-value" id="activeBookingsCount">0</span>
+                        <span class="stat-label">Active</span>
+                    </div>
+                    <div class="booking-stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <span class="stat-value" id="completedBookingsCount">0</span>
+                        <span class="stat-label">Completed</span>
+                    </div>
+                    <div class="booking-stat-card">
+                        <i class="fas fa-times-circle"></i>
+                        <span class="stat-value" id="cancelledBookingsCount">0</span>
+                        <span class="stat-label">Cancelled</span>
+                    </div>
+                    <div class="booking-stat-card">
+                        <i class="fas fa-rupee-sign"></i>
+                        <span class="stat-value" id="totalSpent">₹0</span>
+                        <span class="stat-label">Total Spent</span>
+                    </div>
+                </div>
+
+                <div id="bookingsLoginPrompt" class="login-prompt" style="display: none;">
+                    <div class="login-prompt-content">
+                        <i class="fas fa-lock"></i>
+                        <h3>Please Login to View Your Bookings</h3>
+                        <p>You need to be logged in to view and manage your bookings.</p>
+                        <button class="btn btn-primary" onclick="showCustomerLogin()">Login Now</button>
+                    </div>
+                </div>
+
+                <div id="myBookingsList" class="bookings-list">
+                    <!-- Bookings will be populated here -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h4>Address</h4>
+                            <p>123 Parking Street, City Center<br>Pune, Maharashtra 411001</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h4>Phone</h4>
+                            <p>+91 98765 43210</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h4>Email</h4>
+                            <p>support@parkeasy.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h4>Operating Hours</h4>
+                            <p>24/7 Service<br>Customer Support: 9 AM - 9 PM</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Send us a Message</h3>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Your Message" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ParkEasy</h3>
+                    <p>Your trusted digital parking solution for hassle-free parking experience.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#book">Book Slot</a></li>
+                        <li><a href="#availability">Availability</a></li>
+                        <li><a href="#payment">Payment</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Contact Info</h4>
+                    <p><i class="fas fa-phone"></i> +91 98765 43210</p>
+                    <p><i class="fas fa-envelope"></i> support@parkeasy.com</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Pune, Maharashtra</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 ParkEasy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Extend Booking Modal -->
+    <div id="extendBookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Extend Booking</h2>
+                <span class="close" onclick="closeExtendModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="booking-info-summary">
+                    <p><strong>Slot:</strong> <span id="extendSlot"></span></p>
+                    <p><strong>Location:</strong> <span id="extendLocation"></span></p>
+                    <p><strong>Current End Time:</strong> <span id="extendCurrentEnd"></span></p>
+                </div>
+                <form id="extendBookingForm">
+                    <div class="form-group">
+                        <label for="extendDuration">Additional Duration</label>
+                        <select id="extendDuration" name="duration" required>
+                            <option value="1">1 hour - ₹20</option>
+                            <option value="2">2 hours - ₹35</option>
+                            <option value="4">4 hours - ₹60</option>
+                            <option value="8">8 hours - ₹100</option>
+                        </select>
+                    </div>
+                    <div class="total-amount">
+                        <span>Additional Amount: ₹<span id="extendAmount">0</span></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">Extend Booking</button>
+                    <button type="button" class="btn btn-secondary btn-full" onclick="closeExtendModal()">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="modal">
+        <div class="modal-content receipt-content">
+            <div class="modal-header">
+                <h2>Booking Receipt</h2>
+                <span class="close" onclick="closeReceiptModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="receiptBody">
+                <!-- Receipt content will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="printReceipt()">
+                    <i class="fas fa-print"></i> Print Receipt
+                </button>
+                <button class="btn btn-secondary" onclick="closeReceiptModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Login Modal -->
+    <div id="customerLoginModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Customer Login</h2>
+            </div>
+            <div class="modal-body">
+                <form id="customerLoginForm">
+                    <div class="form-group">
+                        <label for="customerUsername">Username</label>
+                        <input type="text" id="customerUsername" name="username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerPassword">Password</label>
+                        <input type="password" id="customerPassword" name="password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">Login</button>
+                </form>
+                
+                <div class="demo-credentials">
+                    <h4>Demo Credentials:</h4>
+                    <p><strong>Username:</strong> customer</p>
+                    <p><strong>Password:</strong> customer123</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
