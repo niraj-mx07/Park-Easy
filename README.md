@@ -7,7 +7,7 @@ The system reduces manual effort, avoids parking congestion, and provides a stru
 
 This project demonstrates the practical use of *full-stack web development concepts, **role-based access control, and **real-world problem solving and a scalable*.
 
----
+----
 
 ## 🎯 Problem Statement
 
@@ -58,7 +58,7 @@ The system separates responsibilities clearly between users and administrators t
 - 📱 Responsive design for different devices.
 - 💻 Fully responsive system optimized for both desktop and mobile devices.
 
----
+----
 
 ## 🧠 System Highlights
 
@@ -68,7 +68,7 @@ The system separates responsibilities clearly between users and administrators t
 - Scalable design for future enhancements.
 - Real-world use case suitable for commercial environments.
 
----
+----
 
 ## 🛠️ Technology Stack
 
